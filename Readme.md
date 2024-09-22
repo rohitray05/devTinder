@@ -57,3 +57,19 @@
 
 - package-lock.json
   - This has the exact version installed and also it is a snapshot of all the node_modeules dependencies
+
+# Route Handlers
+
+- const app = express()
+- app.use('/') -> If any route starts with / it will alsways take this route in the case of .use
+- app.use('/hello') -> If any route starts with /hello/**\*\*** it will alsways take this route in the case of .use
+- Order of Routes from middleware, in that case order of declaration of order of routes it is important
+- app.use
+
+  - app.use('/') -> if written on top will match with all the routes starting /**\***..., anything after /
+  - app.use('/hello') -> if written on top will match with all routes starting with /hello/**\*** anything after /hello
+  - Thus if app.use generic method is written on top it will overwrite any sub routes written after this handler.
+  - Order of Writing Routes is important.
+  - .use m=will match both get method and also post methods
+
+- On Browser its a GET API call
