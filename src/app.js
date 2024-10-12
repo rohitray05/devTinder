@@ -56,6 +56,23 @@ app.use('/test',(req,res)=>{
 })
 
 
+
+///Middle Ware
+app.use(
+  "/middleware",
+  (req,res,next)=>{
+    console.log('First Respose')
+    res.send('First Response')
+    next()
+  },
+  (req,res,next)=>{
+    console.log('Second Respose')
+    res.send('Second Response')
+  }
+)
+
+
+
 const PORT = process.env.PORT|3000
 app.listen(PORT,()=>{
   console.log('Server running on Port ',PORT)

@@ -84,6 +84,7 @@
 # Router Concepts
 
 - Regular expressions in the Router Url also work
+
   - app.get('/re?g',(req,res)=>{}) This will work and check for optional e. This will work for /reg & /rg as well
   - app.get('/re+g',(req,res)=>{}) This will work and check for more than one occurence of e. This will work for /reg & /reeeeeeeeg as well making e as mandatory and min 1 occurence of 'e'.
   - app.get('/re*g',(req,res)=>{}) This will work and check for anything that starts with 're' in between anything and ends with 'g'. This will work for /reg & /reeeeeeeeg , /reqweg as well making * mark as anything.
@@ -94,3 +95,9 @@
   - app.get('/dynamicuser/:id',(req,res)=>{ const params = req.params;const query = req.query;res.send({...query,...params})}) This dynamic Route is the combination of Params and Query. The url /dynamicuser/5?userId=5&change=true.
   - Query params are passed in url with /url?key=value&key2=value2. Use case Pagination & filtering query
   - Route Paramsa are passed in url with /url/50/rohit mapped in node as /url/:userId/:name. Use case specific user info
+
+  # Middleware
+
+  - app.use('/route',(req,res,next)=>{},(req,res,next)=>{})
+  - Once the response is sent, and even if we call next() for next method, it will give errors
+  - app.get,app.use all can have middlewares, app.use("/route",[rh1,rh2,rh3]) All rh are route Handlers and we have any combination of route handlers with or without array
