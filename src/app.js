@@ -1,5 +1,5 @@
 const express = require('express')
-
+const adminAuth = require('./middleware/auth')
 
 const app = express();
 
@@ -70,6 +70,22 @@ app.use(
     res.send('Second Response')
   }
 )
+
+//Lets import and add middleware which will authorize admin route
+app.use('/admin',adminAuth)
+
+app.get('/admin/getAllData',(req,res)=>{
+  res.send('All Users')
+})
+
+app.get('/admin/deleteUser',(req,res)=>{
+  res.send('Delete a User')
+})
+
+
+
+//Error Handling
+
 
 
 

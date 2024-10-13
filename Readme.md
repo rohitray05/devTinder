@@ -101,3 +101,21 @@
   - app.use('/route',(req,res,next)=>{},(req,res,next)=>{})
   - Once the response is sent, and even if we call next() for next method, it will give errors
   - app.get,app.use all can have middlewares, app.use("/route",[rh1,rh2,rh3]) All rh are route Handlers and we have any combination of route handlers with or without array
+  - if it has next() then we can call it as Middleware, if it sends Response Back then its called Route Handler
+
+  # Usage of Middleware
+
+  - Authenticating the API Route
+  - Add a Authentication Middleware
+  - Can write One Authentication Logic at one place and then use it along
+  - app.use('/user',authUser,(req,res)=>{})
+  - authUser = (req,res,next)=>{}
+  - Only for Path which requries Middleware it makes it better to work around with logics
+  - # Error Handling
+    - try{}catch(){} block
+    - throw new Error()
+    - Route Handlers also can handle error differently
+    - Route Handler (err,req,res,next)=>{}
+    - Error Order matters
+    - app.use('/',(err,req,res,next)=>{}) This matches all Routes and can be used as wild card
+    - app.use('/',(err,req,res,next)=>{if(err){res.status(500).send('Something went Wrong')}})
