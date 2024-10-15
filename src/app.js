@@ -15,12 +15,14 @@ app.use(express.json())
 //API to Add Data
 app.post('/signup',async (req,res)=>{
   //Create new Instance of User with Dummy Data and its an async operation
-  const {firstName,lastName,emailID,password} = req.body
+  const {firstName,lastName,emailID,password,age,gender} = req.body
   const user = new User({
    firstName,
    lastName,
    emailID,
-   password
+   password,
+   age,
+   gender
   })
   
   try {
@@ -33,6 +35,67 @@ app.post('/signup',async (req,res)=>{
   }
 })
 
+//Find one User by EmailId
+app.post('/user',async (req,res)=>{
+  const {emailID} = req.body
+  if(emailID){
+    try{
+      const users = await User.find({emailID:emailID})
+      if(users.length){
+        res.send(users)
+      }else{
+        res.status(404).send('User Not Found!!')
+      }
+    }catch(err){
+      res.send('Something went wrong!!!1')
+    }
+  }
+})
+
+
+//Get All User
+app.get('/feed',async (req,res)=>{
+   try{
+    const users = await User.find({})
+    if(!users.length){
+     res.status(400).send('No User Found')
+    }else{
+      res.send(users)
+    } 
+   }catch(err){
+      res.status(500).send('Something went wrong`')
+   }
+})
+
+//Delete User
+app.delete('/user',async (req,res)=>{
+  const userId = req.body.userId
+     try{
+      const user = await User.findByIdAndDelete(userId)
+      if(user){
+        res.send('User Deleted Successfully')
+      }else{
+        res.status(400).send('User Not Found')
+      }
+     }catch(err){
+      res.status(404).send('Something went wrong!!!')
+     }
+})
+
+
+app.patch('/user', async (req,res)=>{
+  const userId = req.body.userId
+  const data = req.body
+  
+  if(!userId)
+    res.send('Please pass User ID!!')
+  try{
+    const update = await User.findByIdAndUpdate({_id:userId},data)
+    res.send(update)
+  }catch(err){
+    res.send(err)
+  }
+})
 
 
 connectDB(URL,dataBase).then(()=>{

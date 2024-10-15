@@ -156,3 +156,14 @@
 - http is imp and we cannot use https as we reqiuire certificate for secure connection
 - Two extra variables are also created in the document object which are \_id and \_v unique id and version respectively
 - JSON and JS objects are different, over internet or network, we use JSON to communicate but when server receives the JSON it has to convert it to JS object,we have express built in parser which can be used all along with nodejs app, app.use(express.json())
+
+# Mongoose Methods
+
+- Some Commonly used Methods in Mongoose, User is the model
+  - Get All : await User.find({})
+  - Get user by Email : User.find({emailID:emailID})
+  - Delete a User : User.findByIdAndDelete(userId)
+  - findByID and findOne are almost same but findById(id) while findOne({\_id:id}), Basically its shorthand
+  - patch and put use for update but put makes the whole object replaced while patch makes partial updates
+  - const update = await User.findByIdAndUpdate({\_id:userId},data)
+  - Delete : const user = await User.findByIdAndDelete(userId)
