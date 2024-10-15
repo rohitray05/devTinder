@@ -249,4 +249,23 @@
     runValidators:true
     })
 - Time Stamp : We have to add timestamp
+
   - const userSchema = mongoose.Schema({value:{type:sometype}},{timestamps:true})
+
+- Restrictions can also be added at API block inside try catch
+
+- userId can be passed as params in the url
+  - To catch userId from the params we can use req.params.userId
+  - app.patch('/user:userId',async (req,res)=>{
+    const userId = req.params?.userId
+    })
+
+# Validations and Sanitizations using External Lib
+
+- we can use validator - npm i validator
+- can add validators at Schema level or DB level
+- Some common examples are:
+  - validators.isEmail(value)
+  - validator.isStrongPassword(value)
+- validation ensuring that data matches what was requested, and sanitization ensuring that data is secure before being rendered
+- Sanitization : Modifies input to ensure it's valid, such as removing unsafe characters or doubling single quotes. Sanitization helps secure data before it's rendered for the end user

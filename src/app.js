@@ -15,22 +15,34 @@ app.use(express.json())
 //API to Add Data
 app.post('/signup',async (req,res)=>{
   //Create new Instance of User with Dummy Data and its an async operation
-  const {firstName,lastName,emailID,password,age,gender,skills} = req.body
-  const user = new User({
-   firstName,
-   lastName,
-   emailID,
-   password,
-   age,
-   gender,
-   skills
-  })
-  
   try {
+    const sanitizeAndValidate = (data)=>{
+      const {firstName,lastName,emailID,password,age,gender,skills} = data
+      if(firstName.length>10){
+        throw new Error('First Name Cannot be More than 10 Characters')
+      }else if(lastName.length>10){
+        throw new Error('lastName Name Cannot be More than 10 Characters')
+      }else if(emailID.length > 10){
+        //can also add Regex pattern
+        throw new Error('Email  Cannot be More than 10 Characters')
+      }else if(password.length > 10 ){
+        //password pattern can also be added here 
+        throw new Error('Password  Cannot be More than 10 Characters')
+      }else if(age>=18 && age<= 40 ){
+        //password pattern can also be added here 
+        throw new Error('Age not in Range')
+      }else if(skills.length > 5 ){
+        throw new Error('Only 5 skills allowed')
+      } 
+    }
+
+    sanitizeAndValidate(req.body)
+  
+    const user = new User(req.body)
     await user.save()
     res.send('User Added Successfully')
   } catch (error) {
-    res.status(400).send(error)
+    res.status(400).send('Add User Not Allowed ' + error.message)
   }{
 
   }
@@ -84,13 +96,22 @@ app.delete('/user',async (req,res)=>{
 })
 
 
-app.patch('/user', async (req,res)=>{
-  const userId = req.body.userId
+app.patch('/user:userId', async (req,res)=>{
+  const userId = req.params?.userId
   const data = req.body
   
   if(!userId)
     res.send('Please pass User ID!!')
+
   try{
+    // Do not allow certain fields to be updated
+     const ALLOWED_FIELDS = ['userId','photoUrl','about','gender','age']
+     const isUpdateAllowed = Object.keys(data).every(k=> ALLOWED_FIELDS.includes(k)) 
+  
+     if(!isUpdateAllowed){
+          res.status(400).send('Update Not Allowed')
+      }
+
     const update = await User.findByIdAndUpdate({_id:userId},data,{
       returnDocument:"after",
       runValidators:true
