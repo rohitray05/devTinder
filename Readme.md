@@ -119,3 +119,40 @@
     - Error Order matters
     - app.use('/',(err,req,res,next)=>{}) This matches all Routes and can be used as wild card
     - app.use('/',(err,req,res,next)=>{if(err){res.status(500).send('Something went Wrong')}})
+
+# Mongo DB cmds
+
+- Use Mongoose package to interact with MongoDB
+- Following Cmds are to enable and stop mongodb service
+  - brew services start mongodb-community@7.0
+  - brew services list
+  - brew services stop mongodb-community@7.0
+- Good way to connect to DB is async function
+- In URL we can add database name , if not then it will be connected to MongoDB cluster
+- MongoCluster->Database->Colection->Document
+- AS dB conn is async but serverlisten is in sync, good thing is to first connect with DB and then run server
+- const connectDB = async (url,db)=>{ await mongoose.connect(url+db)} export this method basic connection, it returns a promise
+- connectDB(URL,dataBase).then(()=>{
+  console.log('Database Connection Successfull')
+  app.listen(PORT,()=>{
+  console.log('Server running on Port ',PORT)
+  })
+  }).catch(err=>{})
+- creation of Schema/model, first we create a schema and then we create a model out of schema and finally export the model
+- const userSchema = mongoose.schema({name:{type:String}})
+- const User = mongoose.model('User',userSchema)
+- app.post('/signup',async (req,res)=>{
+  const user = new User({
+  ...... All data here which is to be saved
+  })
+  try{
+  await user.save()
+  }catch(err){
+  res.status(400).send('Not able to Add Data')
+  }
+  })
+
+- http://localhost:3000/signup
+- http is imp and we cannot use https as we reqiuire certificate for secure connection
+- Two extra variables are also created in the document object which are \_id and \_v unique id and version respectively
+- JSON and JS objects are different, over internet or network, we use JSON to communicate but when server receives the JSON it has to convert it to JS object,we have express built in parser which can be used all along with nodejs app, app.use(express.json())
