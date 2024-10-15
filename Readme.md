@@ -167,3 +167,86 @@
   - patch and put use for update but put makes the whole object replaced while patch makes partial updates
   - const update = await User.findByIdAndUpdate({\_id:userId},data)
   - Delete : const user = await User.findByIdAndDelete(userId)
+
+# Schema Checks in Mongoose Schema
+
+- required:true is added for mandatory fields
+  - const userSchema = mongoose.Schema({
+    firstName:{
+    type:String,
+    required:true
+    }
+    })
+- unique:true is added for only unique email ids
+  - const userSchema = mongoose.Schema({
+    emailID:{
+    type:String,
+    required:true,
+    unique:true
+    }
+    })
+- Add array in Schema Type
+
+  - skills:{
+    type:[String]
+    }
+
+- default Values : We can also add default values to DB if not passed from UI
+
+  - about:{
+    type:String,
+    default:"This is a default About of User"
+    }
+
+- lowercase : This flag helps to add data to DB in lowercase even if the user tries to enter email in caps
+
+  - emailID:{
+    type:String,
+    required:true,
+    unique:true,
+    lowercase:true
+    }
+
+- trim : Trimming extra spaces from all end
+
+  - emailID:{
+    type:String,
+    required:true,
+    unique:true,
+    lowercase:true,
+    trim:true
+    }
+
+- minlength: 4 , This is added to have a name of min length 4 in case of string data
+
+  - firstName:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength: 4
+    }
+
+- min :4 -> This can be added in case of number
+
+  - age:{
+    type:Number,
+    min:18
+    }
+
+- custom Validate Function: By default it will work with new Data Creation and not while update, to make it work when we have a function findByIdandUpdate(), apart from id and data we also have options to be passed and that option can be configured to check for Validations
+  - gender:{
+    type:String,
+    validate(value){
+    const allowed = ['male','female','others']
+    if(!allowed.includes(value)){
+    throw new Error('Gender Not Valid')
+    }
+    }
+    }
+  - while Updating : we pass options Object for configuration
+    const update = await User.findByIdAndUpdate({\_id:userId},data,{
+    returnDocument:"after",
+    runValidators:true
+    })
+- Time Stamp : We have to add timestamp
+  - const userSchema = mongoose.Schema({value:{type:sometype}},{timestamps:true})

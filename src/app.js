@@ -15,21 +15,22 @@ app.use(express.json())
 //API to Add Data
 app.post('/signup',async (req,res)=>{
   //Create new Instance of User with Dummy Data and its an async operation
-  const {firstName,lastName,emailID,password,age,gender} = req.body
+  const {firstName,lastName,emailID,password,age,gender,skills} = req.body
   const user = new User({
    firstName,
    lastName,
    emailID,
    password,
    age,
-   gender
+   gender,
+   skills
   })
   
   try {
     await user.save()
     res.send('User Added Successfully')
   } catch (error) {
-    res.status(400).send('Something went wrong')
+    res.status(400).send(error)
   }{
 
   }
@@ -90,10 +91,13 @@ app.patch('/user', async (req,res)=>{
   if(!userId)
     res.send('Please pass User ID!!')
   try{
-    const update = await User.findByIdAndUpdate({_id:userId},data)
+    const update = await User.findByIdAndUpdate({_id:userId},data,{
+      returnDocument:"after",
+      runValidators:true
+    })
     res.send(update)
   }catch(err){
-    res.send(err)
+    res.send("Update Failed: " + err.message)
   }
 })
 
