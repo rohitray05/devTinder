@@ -318,6 +318,7 @@
       - console.log(cookies)
 
     - Creation of JWT Token
+
       - npm i jsonwebtoken
       - jwt token has 3 parts seperated by dots:
         - 1. Header
@@ -329,3 +330,22 @@
       - const {token} = req.cookies
       - const decodedMessage = await jwt.verify(token,secretKeyKnownToOnlyServer)
       - decodedMessage will have the \_id
+
+    - Apply Auth Token Validation to Al existing API
+    - Best way is to handle it is by creating middlewares namely auth middleware
+    - # Auth Middleware
+      - Steps to be Followed:
+      - Reading token from cookie
+      - Validate the Token against user id
+      - Find User using decrypted Jwt Token
+      - we can take whole auth valdation to different file and export it using exports.module = {auth}
+      - Import auth middleware and then can use in all route handlers
+      - Auth middleware if authenticated can also attach fetched user
+      - req.user = fetchedUser
+      - app.get('/profile',userAuth,async (req,res)=>{})
+      - fetched user data can be used in the next handler if required
+      - we can have options object while creating token and that option can have field to expire the token, {expiresIn:'7d'} This symbolises 7days, we can also have hours
+      - we can also expire the cookie and for that as well we can pass options object, while sneding the cookie in response
+      - res.cookie('token',token,{
+        expires: new Date(Date.now() + 8\*3600000)
+        })
