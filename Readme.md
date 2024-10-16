@@ -284,3 +284,33 @@
     - const isPasswordValid = await bcrypt.compare(password,user.password)
     - As a security purpose , even if email id is not present, send error in Credential
     - Should Not expose extra about credential
+
+# Authentication JWT Cookie
+
+- Process of JWT
+
+  - Login Success
+  - Server Will send JWT token to client
+  - client will save the token on its side
+  - Now on every request we will be sending JWT attached to all the requests sent from client to server
+
+  - Cookies
+
+    - JWT is sent embedded in a cookie
+    - And Cookie will travel along with all subsequent requests from client
+    - Cookie has expiry
+    - If Req sent from expired cookie the UI will be redirected to Login
+
+  - Process of Implementation
+    - create JWT Token
+    - res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true })
+    - 'name': is the name of token
+    - 'tobi' is value of cookie
+    - {} : options for configuration eg: { expires: new Date(Date.now() + 900000), httpOnly: true }
+    - after res.cookie() , we can send res.send('Login Success')
+    - while receiving Cookies we need cookie-parser library from express which can be used to extract cookie, just like app.use(express.json()) middleware
+    - const cookieParser = require('cookie-parser')
+    - app.use(cookieParser())
+    - Get Cookies using
+      - const cookies = req.cookies
+      - console.log(cookies)

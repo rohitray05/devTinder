@@ -4,7 +4,7 @@ const connectDB =  require('./config/database')
 const User = require('./models/user');
 const ValidateSignupData = require('./utils/validationData');
 const bcrypt = require('bcrypt');
-
+const cookieParser = require('cookie-parser')
 
 const app = express();
 const PORT = process.env.PORT|3000
@@ -14,6 +14,7 @@ const dataBase = 'devTinder'
 
 //Parser from JSON to JS object
 app.use(express.json())
+app.use(cookieParser())
 
 //API to Add Data
 app.post('/signup',async (req,res)=>{
@@ -132,7 +133,9 @@ app.post('/login',async (req,res)=>{
    }else{
     console.log(password)
     console.log(user.password)
-
+    
+    //We will pass cookie here 
+    res.cookie('name','token-asasasasasasasasasassxxaxxsxsxsx')
     res.send('Login SuccessFull')
    }
   }catch(err){
@@ -140,6 +143,13 @@ app.post('/login',async (req,res)=>{
   }
 })
 
+
+//Profile
+app.get('/profile',async (req,res)=>{
+  const cookies = req.cookies
+  console.log(cookies)
+  res.send('Profile Success')
+})
 
 connectDB(URL,dataBase).then(()=>{
   console.log('Database Connection Successfull')
