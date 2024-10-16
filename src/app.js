@@ -5,6 +5,9 @@ const User = require('./models/user');
 const ValidateSignupData = require('./utils/validationData');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken');
+
+
 
 const app = express();
 const PORT = process.env.PORT|3000
@@ -135,7 +138,10 @@ app.post('/login',async (req,res)=>{
     console.log(user.password)
     
     //We will pass cookie here 
-    res.cookie('name','token-asasasasasasasasasassxxaxxsxsxsx')
+    //res.cookie('name','token-asasasasasasasasasassxxaxxsxsxsx')
+    const token = await jwt.sign({_id:user._id},'Dev@Tinder0509')
+    res.cookie('token',token)
+    console.log(token)
     res.send('Login SuccessFull')
    }
   }catch(err){
@@ -146,9 +152,26 @@ app.post('/login',async (req,res)=>{
 
 //Profile
 app.get('/profile',async (req,res)=>{
-  const cookies = req.cookies
-  console.log(cookies)
-  res.send('Profile Success')
+  try{
+  if(!req.cookies){
+    throw new Error('Invalid Authentication')
+  }  
+  const {token} = req.cookies
+  //Verify Token
+  const decodedMessage  =  await jwt.verify(token,'Dev@Tinder0509')
+  if(!decodedMessage || !decodedMessage._id){
+    throw new Error('Invalid Authentication')
+  }
+  const { _id } = decodedMessage 
+  //Find user Using ID
+  const user = await User.findById(_id)
+  if(!user){
+    throw new Error('Invalid Authentication')
+  }
+  res.send('Profile Success '+ user.firstName + '  ' + user.lastName)
+  }catch(err){
+    res.status(400).send(err.message)
+  }
 })
 
 connectDB(URL,dataBase).then(()=>{

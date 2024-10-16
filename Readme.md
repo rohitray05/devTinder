@@ -302,7 +302,8 @@
     - If Req sent from expired cookie the UI will be redirected to Login
 
   - Process of Implementation
-    - create JWT Token
+
+    - Create JWT Token
     - res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true })
     - 'name': is the name of token
     - 'tobi' is value of cookie
@@ -312,5 +313,19 @@
     - const cookieParser = require('cookie-parser')
     - app.use(cookieParser())
     - Get Cookies using
+
       - const cookies = req.cookies
       - console.log(cookies)
+
+    - Creation of JWT Token
+      - npm i jsonwebtoken
+      - jwt token has 3 parts seperated by dots:
+        - 1. Header
+        - 2. Paylaod or Data which we want to Hide
+        - 3. Signature
+      - const jwttoken = await jwt.sign({\_id:user.\_id},secretKeyKnownToOnlyServer), here we are adding userid in the paylaod data to hide which we will retrieve back when validated
+      - Then Sending token using cookie req.cookie('token',jwttoken)
+      - This token is having hidden information which is the id and we have to extract the token
+      - const {token} = req.cookies
+      - const decodedMessage = await jwt.verify(token,secretKeyKnownToOnlyServer)
+      - decodedMessage will have the \_id
