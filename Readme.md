@@ -269,3 +269,18 @@
   - validator.isStrongPassword(value)
 - validation ensuring that data matches what was requested, and sanitization ensuring that data is secure before being rendered
 - Sanitization : Modifies input to ensure it's valid, such as removing unsafe characters or doubling single quotes. Sanitization helps secure data before it's rendered for the end user
+
+# Flow of User Post Data
+
+- Validate the User Data : can use a helper function and call helper function in seperate module and call that in try block before creating User Instance
+- Encryption of pwd, we can use bcrypt lib for hashing pwd, const hashedpwd = await bcrypt.hash(password, 10)
+- And the creating User Model Instance comes at last
+
+- Authentication
+  - store pwd in db using bcrypt lib : const hashedpwd = await bcrypt.hash(password, 10)
+  - then login with pwd and compare with hashed pwd
+    - used Find One to find the User
+    - const user = await User.findOne({emailID:emailID})
+    - const isPasswordValid = await bcrypt.compare(password,user.password)
+    - As a security purpose , even if email id is not present, send error in Credential
+    - Should Not expose extra about credential

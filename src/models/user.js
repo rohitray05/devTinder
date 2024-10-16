@@ -38,6 +38,7 @@ const userSchema = mongoose.Schema({
   },
   gender:{
     type:String,
+    lowercase:true,
     validate(value){
       const allowed = ['male','female','others']
       if(!allowed.includes(value)){

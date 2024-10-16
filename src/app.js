@@ -1,7 +1,10 @@
 const express = require('express')
 const adminAuth = require('./middleware/auth')
 const connectDB =  require('./config/database')
-const User = require('./models/user')
+const User = require('./models/user');
+const ValidateSignupData = require('./utils/validationData');
+const bcrypt = require('bcrypt');
+
 
 const app = express();
 const PORT = process.env.PORT|3000
@@ -16,29 +19,20 @@ app.use(express.json())
 app.post('/signup',async (req,res)=>{
   //Create new Instance of User with Dummy Data and its an async operation
   try {
-    const sanitizeAndValidate = (data)=>{
-      const {firstName,lastName,emailID,password,age,gender,skills} = data
-      if(firstName.length>10){
-        throw new Error('First Name Cannot be More than 10 Characters')
-      }else if(lastName.length>10){
-        throw new Error('lastName Name Cannot be More than 10 Characters')
-      }else if(emailID.length > 10){
-        //can also add Regex pattern
-        throw new Error('Email  Cannot be More than 10 Characters')
-      }else if(password.length > 10 ){
-        //password pattern can also be added here 
-        throw new Error('Password  Cannot be More than 10 Characters')
-      }else if(age>=18 && age<= 40 ){
-        //password pattern can also be added here 
-        throw new Error('Age not in Range')
-      }else if(skills.length > 5 ){
-        throw new Error('Only 5 skills allowed')
-      } 
-    }
-
-    sanitizeAndValidate(req.body)
-  
-    const user = new User(req.body)
+    ValidateSignupData(req)
+    const {firstName,lastName,emailID,password,gender,skills} = req.body; 
+    //Encrypt pwd
+    const hashedpwd = await bcrypt.hash(password, 10) //10 is std number of salt
+    console.log(hashedpwd)
+      
+    const user = new User({
+      firstName,
+      lastName,
+      emailID,
+      gender,
+      skills,
+      password:hashedpwd
+    })
     await user.save()
     res.send('User Added Successfully')
   } catch (error) {
@@ -119,6 +113,30 @@ app.patch('/user:userId', async (req,res)=>{
     res.send(update)
   }catch(err){
     res.send("Update Failed: " + err.message)
+  }
+})
+
+//Login
+app.post('/login',async (req,res)=>{
+  try{
+   const {emailID,password} = req.body
+
+   const user = await User.findOne({emailID:emailID})
+   if(!user){
+    throw new Error('User Not Found')
+   }
+   const isPasswordValid = await bcrypt.compare(password,user.password)
+   
+   if(!isPasswordValid){
+    throw new Error('Invalid Password')
+   }else{
+    console.log(password)
+    console.log(user.password)
+
+    res.send('Login SuccessFull')
+   }
+  }catch(err){
+    res.status(400).send('Not Allowed'+ err.message)
   }
 })
 
