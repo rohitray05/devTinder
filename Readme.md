@@ -56,7 +56,7 @@
   - ^ & ~ : ^carrot will auto update package in case of minor and patch upgrades,~tilda will update only the patches and not the major and minor.
 
 - package-lock.json
-  - This has the exact version installed and also it is a snapshot of all the node_modeules dependencies
+  - This has the exact version installed and also it is a snapshot of all the node_modules dependencies
 
 # Route Handlers
 
@@ -349,3 +349,15 @@
       - res.cookie('token',token,{
         expires: new Date(Date.now() + 8\*3600000)
         })
+
+# Express Routers for Application
+
+- When we have actual implementation we use Express Router
+- const authRouter = express.Router()
+- authRouter.post('/signup') This is no different than app.use() for end user like us
+- General Convention can be to start using Routes from the begning of the Application
+
+- In app.js : Here the Route request will go 1 by 1 to all routes and check the matching routes
+  - app.use('/',authRouter)
+  - app.use('/',profileRouter)
+  - app.use('/',requestRouter)
