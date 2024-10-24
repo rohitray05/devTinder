@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
-const ValidateSignupData = require('../utils/validationData');
+const {ValidateSignupData} = require('../utils/validationData');
 const bcrypt = require('bcrypt');
 
 
@@ -54,6 +54,16 @@ router.post('/login',async (req,res)=>{
   }catch(err){
     res.status(400).send('Not Allowed '+ err.message)
   }
+})
+
+
+//Logout
+router.post('/logout', async (req,res)=>{
+  res.
+  cookie('token',null,{
+    expires:new Date(Date.now())
+  })
+  .send('Logout Successfully!!')
 })
 
 

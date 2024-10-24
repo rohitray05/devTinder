@@ -361,3 +361,13 @@
   - app.use('/',authRouter)
   - app.use('/',profileRouter)
   - app.use('/',requestRouter)
+
+# Build Dev Tinder API's
+
+- logout API: Does not matter if the user is logged in or not we can just send cookie back with null value and expire Date.now()
+- expires:new Date(Date.now())
+- res.
+  cookie('token',null,{
+  expires:new Date(Date.now())
+  })
+  .send()

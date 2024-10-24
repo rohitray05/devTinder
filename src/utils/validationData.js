@@ -21,4 +21,27 @@ const ValidateSignupData = (req)=>{
   } 
 }
 
-module.exports = ValidateSignupData
+
+const ValidateEditProfileData = (req)=>{
+  const ALLOWED_FIELDS = [
+    'firstName',
+    'lastName',
+    'emailID',
+    'photoUrl',
+    'gender',
+    'age',
+    'about',
+    'skills'
+  ]
+
+  const isEditAllowed = Object.keys(req.body).every(key=>ALLOWED_FIELDS.includes(key))
+  if(!isEditAllowed){
+    throw new Error('Profile Edit Not Allowed')
+  }
+  return isEditAllowed
+}
+
+module.exports = {
+  ValidateSignupData,
+  ValidateEditProfileData
+}

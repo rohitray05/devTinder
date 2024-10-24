@@ -11,6 +11,7 @@
 - GET /profile/view
 - PATCH /profile/edit
 - PATCH /profile/password
+- PATCH /profile/paaswordreset
 
 ## Use these while sending request
 
