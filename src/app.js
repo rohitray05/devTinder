@@ -6,7 +6,7 @@ const {authRouter} = require('./routes/auth')
 const {profileRouter} = require('./routes/profile')
 const {requestRouter} = require('./routes/requests')
 const {ConnectionRequestRouter} = require('./routes/connectionRequest')
-
+const {userRouter} = require('./routes/user')
 
 const app = express();
 const PORT = process.env.PORT|3000
@@ -22,6 +22,7 @@ app.use('/',authRouter)
 app.use('/',profileRouter)
 app.use('/',requestRouter)
 app.use('/',ConnectionRequestRouter)
+app.use('/',userRouter)
 
 connectDB(URL,dataBase).then(()=>{
   console.log('Database Connection Successfull')

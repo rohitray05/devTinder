@@ -431,3 +431,25 @@
 - when two filed combination comes into picture we call it 'Compound Index'.
 - //Compound Index
   connectionRequestSchema.index({fromUserId:1,toUserId:1}) Here 1 means ascending order
+
+# More DB Query
+
+- get All Pending Conenction Request
+- One user got lot of connection Request
+- That One user will make API calls to view all Connection Request
+- userRouter.get('/user/connections/received',authUser,async (req,res)=>{})
+- One User will have multiple connection Request and Each Conn Request points to one user in User Collection
+- Hence we have to use a concept of Reference as we should not use loops inorder to find abt each connection Request
+- const connectionRequestSchema = new mongoose.Schema({
+  fromUserId:{
+  type:mongoose.Schema.Types.ObjectId,
+  required:true,
+  ref: 'User'
+  }})
+
+- In Code const connectionRequests = await ConnectionRequest.find({
+  toUserId:loggedInUser.\_id,
+  status:'interested'
+  }).populate('fromUserId',['firstName','lastName'])
+- If we do not pass the array then it will send everything, including user email and pwd
+- Tehnically we are joining tables using ref and populate
