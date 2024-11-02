@@ -453,3 +453,20 @@
   }).populate('fromUserId',['firstName','lastName'])
 - If we do not pass the array then it will send everything, including user email and pwd
 - Tehnically we are joining tables using ref and populate
+- Assuming we want only the referenced data and not the data from existing table
+- we can modify data and send only fromUserId as it will have only data which we are filtering from User Collection
+- const data = connectionRequests.map(row=>row.fromUserId)
+- It will give me data only for fromUserId
+
+- select fields with OR condition, here only from and to userId will be received
+- await ConnectionRequest.find({
+  $or:[
+  {fromUserId:loggedIn._id},
+  {toUserId:loggedIn._id}
+  ]
+  }).select("fromUserId,toUserId")
+
+- There are lot of query Operators in mongo and documnet has it all
+
+- .skip() & .limit() for get pagination working in mongo
+  - .skip(0) & .limit(10) it will give first 10
