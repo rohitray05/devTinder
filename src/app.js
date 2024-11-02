@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser')
 const {authRouter} = require('./routes/auth')
 const {profileRouter} = require('./routes/profile')
 const {requestRouter} = require('./routes/requests')
+const {ConnectionRequestRouter} = require('./routes/connectionRequest')
+
 
 const app = express();
 const PORT = process.env.PORT|3000
@@ -19,6 +21,7 @@ app.use(cookieParser())
 app.use('/',authRouter)
 app.use('/',profileRouter)
 app.use('/',requestRouter)
+app.use('/',ConnectionRequestRouter)
 
 connectDB(URL,dataBase).then(()=>{
   console.log('Database Connection Successfull')

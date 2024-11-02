@@ -27,7 +27,7 @@ router.patch('/profile/edit',userAuth, async (req,res)=>{
     console.log(req.body)
     await loggedInUser.save()
     res.json({
-      message:`${loggedInUser.firstName}, your profile ws updated Successfully`,
+      message:`${loggedInUser.firstName}, your profile was updated Successfully`,
       data:loggedInUser
      })   
     }
@@ -36,6 +36,24 @@ router.patch('/profile/edit',userAuth, async (req,res)=>{
     res.status(400).send('Not Allowed ' + err.message)
   }
 })
+
+//Profile Forget Password
+router.post('/profile/forgotpassword',userAuth,async (req,res)=>{
+   try{
+    const newPassword = req.body.password
+    const hashedpwd = await bcrypt.hash(newPassword, 10)
+    const loggedInUser = req.user
+    loggedInUser['password'] = hashedpwd
+    await loggedInUser.save()
+    res.json({
+      message:`${loggedInUser.firstName}, your profile was updated Successfully`,
+     })
+   }catch(err){
+    res.status(400).send('Not Allowed ' + err.message)
+   }
+})
+
+
 
 
 module.exports = {

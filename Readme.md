@@ -371,3 +371,63 @@
   expires:new Date(Date.now())
   })
   .send()
+
+# Connection Requests
+
+- We can store User id of Connection request in same user schema but its not good practice to do so
+- Best strategy would be to have it a seperate schema for connection request and let the User collection handle only User Related Data
+- create a new scehema for Connectionrequest and type can be mongoose.Types.ObjectId
+- fromUserId:{
+  type:mongoose.Types.ObjectId
+  },
+  toUserId:{
+  type:mongoose.Types.ObjectId
+  }
+- status can be created as enum , we gen use enum where we have limited options available,
+  viz viz "ignore,interested,accepted,rejected"
+- status:{
+  type:String,
+  enum:{
+  values:['ignore','interested','accepted','rejected'],
+  message:`{VALUE} is invalid stattus type`
+  }
+  }
+- POST /request/send/interested/:userId
+- POST /request/send/ignored/:userId
+
+- The above two Routes can be made dynamic based on what it is :status/:userId
+- const ConnectionRequest = require('../models/connectionRequest'); and module.exports = ConnectionRequest are imp else it will give contructor error
+- This Dynamic Satatus can have all possible values but sending request and ignoring are the only options should be allowed here
+
+- If Dulicate connection from A->B exists or B->A exists we use mongodb Or condition for query
+- const existingConnectionReq = await ConnectionRequest.findOne({
+  $or:[
+  {fromUserId,toUserId},
+  {fromUserId:toUserId,toUserId:fromUserId}
+  ]
+  })
+- Concept of Pre in mongo at Schema level
+- In ConnectionRequestModel after schema declaration
+- connectionRequestSchema.pre('save',function(){
+  const connectionRequest = this
+  //Check if from and To User id's are same
+  if(connectionRequest.toUserId.equals(connectionRequest.fromUserId)){
+  throw new Error('Sending Requests to yourself not allowed')
+  }
+  next()
+  })
+- ERR_HTTP_HEADERS_SENT when we write any if condition for API validation do write return statement if using res.status.json({})
+
+# DB Optimization
+
+- When we get lot of Connection request we tend to break the querying time.
+- The more the DB will grow it will take time for querying certain data from it.
+- Hence we use the concept of indexing
+- Indexing can be done on a particular field
+- gen when in search in db query we can do indexing of that particular field
+- Here we have User Profile and User Collection having lot of objects
+- example : emailid can be indexed as it will make login faster
+- mongodb makes the field as indexed if that field is marked as unique:true in schema declaration
+- when two filed combination comes into picture we call it 'Compound Index'.
+- //Compound Index
+  connectionRequestSchema.index({fromUserId:1,toUserId:1}) Here 1 means ascending order
